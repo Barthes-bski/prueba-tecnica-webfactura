@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Galería de Imagenes
+{% endblock %}
+
+{% block body %}
+
+    <div class="container container-fluid pt-1 mt-3">
+        <div class="alert alert-primary d-flex align-items-center justify-content-center mt-sm-5 mb-sm-3" role="alert">
+            <div class="row row-cols-1 justify-content-center">
+                <div class="col text-center">
+                    <div class="h1">
+                        Galería de Imágenes
+                    </div>
+                </div>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <div class="col d-flex justify-content-center">
+                        <a class="btn btn-sm btn-success me-2" href="{{ path('app_imagen_new') }}">
+                            Nueva Imagen
+                        </a>
+                        <a class="btn btn-sm btn-info me-2" href="{{ path('app_imagen_new') }}">
+                            Importar desde Archivo
+                        </a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn btn-sm btn-warning me-2" href="{{ path('app_imagen_index') }}">
+                                Volver a Galería
+                            </a>
+                            {{ include('imagen/_aprobar_todo_form.html.twig') }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row
+        row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-4
+        justify-content-center">
+            {% for img in imagens %}
+                <div class="col">
+                    <div class="card mb-3">
+                        <img
+                                class="card-img-top img-fluid"
+                                style="width: 300px; height: 200px;"
+                                src="{{ img.imageUrl ? img.imageUrl : asset('images/img-no-disponible.svg') }}"
+                                alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ img.titulo }}
+                            </h5>
+                            <p class="card-text">
+                                {{ img.descripcion }}
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    {% set updatedAt = img.updatedAt %}
+                                    {# Calcular la diferencia de tiempo entre la fecha de creación y la fecha actual #}
+                                    {% set now = "now"|date("U") %}
+                                    {% set diff = updatedAt|date("U") - now %}
+                                    {# Diferencia en minutos #}
+                                    {% set minutes = diff / 60 %}
+                                    Actualizada hace {{ minutes|round }} minutos
+                                </small>
+                            </p>
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <div class="card-body">
+                                    <a
+                                            href="{{ img.id ? path('app_imagen_show', {'id': img.id}) : '#' }}"
+                                            class="card-link">
+                                        Detalles
+                                    </a>
+                                    <a
+                                            href="{{ img.id ? path('app_imagen_edit', {'id': img.id}) : '#' }}"
+                                            class="card-link">
+                                        Editar
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}

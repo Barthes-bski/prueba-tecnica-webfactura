@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Editar Imagen
+{% endblock %}
+
+{% block body %}
+    <div class="container container-fluid pt-1 mt-3">
+        <div class="alert alert-primary d-flex align-items-center justify-content-center mt-sm-5 mb-sm-3" role="alert">
+            <div class="row row-cols-1 justify-content-center">
+                <div class="col text-center">
+                    <div class="h1">
+                        Editar Información de Imagen
+                    </div>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <a class="btn btn-sm btn-success me-2" href="{{ path('app_imagen_index') }}">
+                        Volver a la Galería
+                    </a>
+                    {% if is_granted('ROLE_USER') %}
+                        {{ include('imagen/_delete_form.html.twig') }}
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        {{ include('imagen/_form.html.twig',
+            {
+                'button_label': 'Actualizar Registro',
+                'imagen': imagen.imageUrl
+            })
+        }}
+    </div>
+
+{% endblock %}

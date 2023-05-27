@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Imagen{% endblock %}
+
+{% block body %}
+    <div class="container container-fluid pt-1 mt-3">
+        <div class="alert alert-primary d-flex align-items-center justify-content-center mt-sm-5 mb-sm-3" role="alert">
+            <div class="row row-cols-1 justify-content-center">
+                <div class="col text-center">
+                    <div class="h1">
+                        Información de Imagen
+                    </div>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <a class="btn btn-sm btn-success me-2" href="{{ path('app_imagen_index') }}">
+                        Volver a la Galería
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        <div class="d-block justify-content-center">
+            <div class="card mb-3">
+                <img
+                        class="card-img-top img-fluid"
+                        style="width: 300px; height: 200px;"
+                        src="{{ imagen.imageUrl ? imagen.imageUrl : asset('images/img-no-disponible.svg') }}"
+                        alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Titulo: {{ imagen.titulo }}
+                    </h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Enlace de la imagen: {{ imagen.imageUrl }}
+                        </li>
+                        <li class="list-group-item">
+                            Descripción: {{ imagen.descripcion }}
+                        </li>
+                        <li class="list-group-item">
+                            En Galería
+                            <small class="text-muted">
+                                (Habilitado)
+                            </small>
+                            :
+                            {{ imagen.status ? 'Sí' : 'No' }}
+                        </li>
+                        <li class="list-group-item">
+                            Creado en: {{ imagen.createdAt ? imagen.createdAt|date('d-m-Y H:i:s') : '' }}
+                        </li>
+                        <li class="list-group-item">
+                            Última Actualización: {{ imagen.updatedAt ? imagen.updatedAt|date('d-m-Y H:i:s') : '' }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

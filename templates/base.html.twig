@@ -18,9 +18,49 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-            {{ include('partials/_navbar.html.twig') }}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" href="#">MSL</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Inicio</a>
+                            </li>
+                            {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_register') }}">Registrarse</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_login') }}">Iniciar Sesión</a>
+                                    </li>
 
-        {% endblock %}
+                            {% endif %}
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_imagen_no_habilitadas') }}">
+                                                Imágenes no Habilitadas
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_logout') }}">
+                                            Cerrar Sesión
+                                        </a>
+                                    </li>
+
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            {% block body %}
+                {# {{ include('partials/_navbar.html.twig') }}#}
+
+            {% endblock %}
+
     </body>
 </html>

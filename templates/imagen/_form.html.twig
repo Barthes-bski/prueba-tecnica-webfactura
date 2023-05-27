@@ -1,0 +1,92 @@
+{{ form_start(form, {
+        attr: {
+        'class': 'form-control p-5 mb-3',
+        'onsubmit': "return confirm('¿Estás seguro de realizar esta acción?');"
+    }
+    })
+}}
+    <div class="mb-3">
+        {{ form_row(form.titulo, {
+                attr: {
+                    'class': 'form-control'
+                }
+            })
+        }}
+        <div class="form-text">
+            Este campo es obligatorio, por favor completar.
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.image_url, {
+            attr: {
+                'class': 'form-control'
+            }
+        })
+        }}
+        <div class="form-text">
+            Este campo es obligatorio, por favor completar.
+        </div>
+        <div class="mb-3">
+            <div id="imagen-preview">
+                <img
+                        class="img-fluid"
+                        style="width: 300px; height: 200px;"
+                        src="{{ imagen|default(asset('images/img-no-disponible.svg'))  }}"
+                        alt="..."
+                >
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.descripcion, {
+            attr: {
+                'class': 'form-control'
+            }
+        })
+        }}
+
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="form-check mb-3">
+            {{ form_row(form.status, {
+                attr: {
+                    'class': 'form-check-input'
+                }
+            }) }}
+        </div>
+    {% endif %}
+
+    <button class="btn btn-sm btn-md btn-lg btn-primary" type="submit">
+        {{ button_label|default('Guardar Registro') }}
+    </button>
+
+{{ form_end(form) }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtén el campo de entrada de URL de imagen y el elemento donde mostrar la previsualización
+        const imageUrlInput = document.getElementById('imagen_image_url'); // Reemplaza 'imagen_image_url' con el ID de tu campo de entrada de URL de imagen
+        const previewContainer = document.getElementById('imagen-preview'); // Reemplaza 'imagen-preview' con el ID del elemento donde mostrar la previsualización
+
+        // Escucha el evento de cambio en el campo de entrada de URL de imagen
+        imageUrlInput.addEventListener('input', function() {
+            console.log('Hola')
+            let imageUrl = this.value;
+
+            // Vacía el contenedor de previsualización si no se proporciona una URL de imagen
+            if (!imageUrl) {
+                previewContainer.innerHTML = '';
+                return;
+            }
+
+            // Crea un elemento de imagen y establece su atributo 'src' con la URL de la imagen
+            let imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.classList.add('img-fluid');
+
+            // Vacía el contenedor de previsualización y agrega la imagen
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(imgElement);
+        });
+    });
+</script>
