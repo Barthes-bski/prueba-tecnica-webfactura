@@ -2,3 +2,51 @@ index:
     path: /
     controller: App\Controller\ImagenController::index
 
+# ROUTES IMAGEN - FUNCIONES DE CRUD
+app_imagen_index:
+    path: /imagen/
+    controller: App\Controller\ImagenController::index
+    methods: GET
+
+app_imagen_new:
+    path: /imagen/new
+    controller: App\Controller\ImagenController::new
+    methods: GET|POST
+
+app_imagen_show:
+    path: /imagen/{id}
+    controller: App\Controller\ImagenController::show
+    methods: GET
+    requirements:
+        id: \d+
+
+app_imagen_edit:
+    path: /imagen/{id}/edit
+    controller: App\Controller\ImagenController::edit
+    methods: GET|POST
+    requirements:
+        id: \d+
+
+app_imagen_delete:
+    path: /imagen/{id}
+    controller: App\Controller\ImagenController::delete
+    methods: POST
+    requirements:
+        id: \d+
+
+# ROUTES IMAGEN - OTROS MÉTODOS
+app_imagen_no_habilitadas:
+    path: /imagen/no-habilitadas
+    controller: App\Controller\ImagenController::noHabilitadas
+    methods: GET
+
+app_imagen_import:
+    path: /imagen/import
+    controller: App\Controller\ImagenController::import
+    methods: GET|POST
+
+app_imagen_aprobados:
+    path: /imagen/todos-aprobados
+    controller: App\Controller\ImagenController::aprobados
+    methods: POST
+

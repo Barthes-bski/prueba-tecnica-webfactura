@@ -20,7 +20,12 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Correo Electrónico'
+                'label' => 'Correo Electrónico',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'El campo no puede estar en blanco',
+                    ]),
+                ],
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Escoja un Rol',
@@ -28,6 +33,11 @@ class RegistrationFormType extends AbstractType
                     'User' => 'ROLE_USER',
                     'Admin' => 'ROLE_ADMIN',
                 ),
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Por favor, seleccione un rol.',
+                    ]),
+                ],
                 'mapped' => false,
             ])
             ->add('plainPassword', PasswordType::class, [
@@ -37,11 +47,11 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Por favor ingresa una contraseña',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Tu contraseña debe tener un minímo de {{ limit }} carácteres',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),

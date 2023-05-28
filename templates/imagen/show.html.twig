@@ -15,8 +15,12 @@
                     <a class="btn btn-sm btn-success me-2" href="{{ path('app_imagen_index') }}">
                         Volver a la Galería
                     </a>
+                    <a class="btn btn-sm btn-warning me-2"
+                       href="{{ imagen.id ? path('app_imagen_edit', {'id': imagen.id}) : '#' }}"
+                    >
+                        Editar
+                    </a>
                 </div>
-
             </div>
         </div>
         <div class="d-block justify-content-center">

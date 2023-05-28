@@ -55,96 +55,42 @@ class ImagenRepository extends ServiceEntityRepository
             $entity->setStatus(false);
             $this->add($entity, true);
         }
-//
-//        $this->getEntityManager()->remove($entity);
-//
-//        if ($flush) {
-//            $this->getEntityManager()->flush();
-//        }
     }
 
-    public function importarArchivoCsv($csvFilePath): array
+    public function importarArchivoCsv($csvFilePath): bool
     {
-        $data = [];
-
-        if (($handle = fopen($csvFilePath, "r")) !== false) {
-            $saltarPrimeraFila = false;
-            while (($row = fgetcsv($handle, 0, ",")) !== false) {
-                if (!$saltarPrimeraFila){
-                    $saltarPrimeraFila = true;
-                    continue;
-                }
-                // Agregar la fila a los datos
-                $imagen = new Imagen();
-                $imagen->setTitulo($row[0]);
-                $imagen->setDescripcion($row[1]);
-                $imagen->setImageUrl($this->verificarAccesoAUrlImagen($row[2]));
-                $imagen->setStatus(1);
-
-                $data[] = $imagen;
-                $this->add($imagen, true);
-            }
-
-            fclose($handle);
-        }
-        return $data;
-    }
-
-    public function leerArchivoCsv(): array
-    {
-        $data = [];
-
-        $csvFilePath =getcwd().'/../test_application_data - galeria.csv';
-
-        if (($handle = fopen($csvFilePath, "r")) !== false) {
-            $saltarPrimeraFila = false;
-            while (($row = fgetcsv($handle, 0, ",")) !== false) {
-                if (!$saltarPrimeraFila){
-                    $saltarPrimeraFila = true;
-                    continue;
-                }
-                // Agregar la fila a los datos
-                $imagen = new Imagen();
-                $imagen->setTitulo($row[0]);
-                $imagen->setDescripcion($row[1]);
-                $imagen->setImageUrl($this->verificarAccesoAUrlImagen($row[2]));
-                $imagen->setStatus(1);
-
-                $data[] = $imagen;
-                $this->add($imagen, false);
-//                $data[] = $row;
-            }
-
-            fclose($handle);
-        }
-        return $data;
-    }
-
-    public function verificarAccesoAUrlImagen($imageUrl)
-    {
-
-        $client = HttpClient::create();
-        $url = $imageUrl;
 
         try {
-            $response = $client->request('GET', $url);
-            $statusCode = $response->getStatusCode();
+            if (($handle = fopen($csvFilePath, "r")) !== false) {
+                $saltarPrimeraFila = false;
+                $columnasEsperadas = ['title', 'description', 'image'];
+                while (($row = fgetcsv($handle, 0, ",")) !== false) {
+                    if (!$saltarPrimeraFila) {
+                        // Verificar si las columnas de la primera fila coinciden con las esperadas
+                        if ($row !== $columnasEsperadas) {
+                            fclose($handle);
+                            return false;
+                        }
 
-            if ($statusCode >= 200 && $statusCode < 300) {
-                // La URL es accesible
-                return $imageUrl;
-            } else {
-                // La URL no es accesible (código de estado no válido)
-                return "no válido";
+                        $saltarPrimeraFila = true;
+                        continue;
+                    }
+                    // Agregar la fila a los datos
+                    $imagen = new Imagen();
+                    $imagen->setTitulo($row[0]);
+                    $imagen->setDescripcion($row[1]);
+                    $imagen->setImageUrl($row[2]);
+                    $imagen->setStatus(0);
+
+                    $this->add($imagen, true);
+                }
+
+                fclose($handle);
             }
-        } catch (TransportExceptionInterface $e) {
-            // Error al hacer la solicitud HTTP (por ejemplo, la URL no existe)
-            dump("Error al acceder a la URL: " . $e->getMessage());
-            return '';
-
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
-
-
     }
 
     public function imagenesHabilitadas(): array
@@ -166,10 +112,10 @@ class ImagenRepository extends ServiceEntityRepository
             ->andWhere('i.status = :status')
             ->setParameter('status', 0)
             ->orderBy('i.titulo', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }
+
 //    /**
 //     * @return Imagen[] Returns an array of Imagen objects
 //     */

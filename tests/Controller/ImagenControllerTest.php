@@ -1,22 +1,28 @@
 <?php
 
-namespace App\Test\Controller;
+namespace App\Tests\Controller;
 
 use App\Entity\Imagen;
 use App\Repository\ImagenRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+
 class ImagenControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private ImagenRepository $repository;
+
     private string $path = '/imagen/';
+
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->disableReboot();
         $this->repository = (static::getContainer()->get('doctrine'))->getRepository(Imagen::class);
+        // Obtén el Entity Manager u otro servicio necesario
+        $entityManager = $this->client->getContainer()->get('doctrine')->getManager();
 
         foreach ($this->repository->findAll() as $object) {
             $this->repository->remove($object, true);
@@ -28,7 +34,7 @@ class ImagenControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Imagen index');
+        self::assertPageTitleContains('Galería de Imagenes');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
@@ -38,18 +44,16 @@ class ImagenControllerTest extends WebTestCase
     {
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
-        $this->markTestIncomplete();
-        $this->client->request('GET', sprintf('%snew', $this->path));
+//        $this->client->request('GET', sprintf('%snew', $this->path));
+        $this->client->request('GET', sprintf('http://localhost:%d%snew', 8000, $this->path));
 
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
+        $this->client->submitForm('Guardar Registro', [
             'imagen[titulo]' => 'Testing',
             'imagen[descripcion]' => 'Testing',
             'imagen[image_url]' => 'Testing',
-            'imagen[status]' => 'Testing',
-            'imagen[created_at]' => 'Testing',
-            'imagen[updated_at]' => 'Testing',
+            'imagen[status]' => true,
         ]);
 
         self::assertResponseRedirects('/imagen/');
@@ -64,9 +68,7 @@ class ImagenControllerTest extends WebTestCase
         $fixture->setTitulo('My Title');
         $fixture->setDescripcion('My Title');
         $fixture->setImage_url('My Title');
-        $fixture->setStatus('My Title');
-        $fixture->setCreated_at('My Title');
-        $fixture->setUpdated_at('My Title');
+        $fixture->setStatus(true);
 
         $this->repository->add($fixture, true);
 
@@ -98,8 +100,6 @@ class ImagenControllerTest extends WebTestCase
             'imagen[descripcion]' => 'Something New',
             'imagen[image_url]' => 'Something New',
             'imagen[status]' => 'Something New',
-            'imagen[created_at]' => 'Something New',
-            'imagen[updated_at]' => 'Something New',
         ]);
 
         self::assertResponseRedirects('/imagen/');

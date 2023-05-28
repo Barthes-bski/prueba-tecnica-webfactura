@@ -19,10 +19,10 @@
                             <a class="btn btn-sm btn-success me-2" href="{{ path('app_imagen_new') }}">
                                 Nueva Imagen
                             </a>
-                            <a class="btn btn-sm btn-info me-2" href="{{ path('app_imagen_import') }}">
-                                Importar desde Archivo
-                            </a>
                             {% if is_granted('ROLE_ADMIN') %}
+                                <a class="btn btn-sm btn-info me-2" href="{{ path('app_imagen_import') }}">
+                                    Importar desde Archivo
+                                </a>
                                 <a class="btn btn-sm btn-warning me-2" href="{{ path('app_imagen_no_habilitadas') }}">
                                     Imagenes Sin Aprobar
                                 </a>
@@ -31,6 +31,11 @@
                 {% endif %}
             </div>
         </div>
+        {% for message in app.flashes('alerta') %}
+            <div id="alerta" class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
         <div class="row
         row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-4
         justify-content-center">
@@ -44,7 +49,7 @@
                                 alt="...">
                         <div class="card-body">
                             <h5 class="card-title">
-                                {{ img.titulo }}
+                                {{ img.titulo|slice(0, 15) ~ (img.titulo|length > 15 ? '...' : '') }}
                             </h5>
                             <p class="card-text">
                                 {{ img.descripcion }}
@@ -91,4 +96,14 @@
 
         </div>
     </div>
+    <script>
+        const alerta = document.getElementById('alerta');
+
+        setTimeout(function() {
+            alerta.style.display = 'none';
+
+            // TODO: Eliminar el mensaje del DOM:
+            // alerta.parentNode.removeChild(alerta);
+        }, 10000);
+    </script>
 {% endblock %}

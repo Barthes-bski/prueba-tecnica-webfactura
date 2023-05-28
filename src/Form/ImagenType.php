@@ -3,15 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Imagen;
-use Doctrine\DBAL\Types\BooleanType;
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 
 class ImagenType extends AbstractType
@@ -25,21 +25,30 @@ class ImagenType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titulo', null, [
-                'label' => 'Título'
+            ->add('titulo', TextType::class, [
+                'label' => 'Título',
+                'constraints' => [
+                    new NotBlank(['message' => 'El título está vacío']),
+                ],
+
             ])
-            ->add('descripcion', null, [
-                'label' => 'Descripción'
+            ->add('descripcion', TextareaType::class, [
+                'label' => 'Descripción',
+                'required' => false,
             ])
             ->add('image_url', UrlType::class, [
                 'label' => 'Enlace de la Imagen',
                 'constraints' => [
-                    new Url(['message' => 'La URL no es válida.'])
+                    new Url([
+                        'message' => 'La URL no es válida.',
+                        'normalizer' => 'trim'
+                    ]),
+                    new NotBlank(['message' => 'El URL está vacío'])
                 ],
             ])
             ->add('status', CheckboxType::class, [
                 'label' => 'Habilitado Para Visualizar',
-
+                'required' => false,
             ])
         ;
 

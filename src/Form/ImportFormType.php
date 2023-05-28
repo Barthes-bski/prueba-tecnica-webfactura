@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Constraints\File;
 
 class ImportFormType extends AbstractType
 {
@@ -26,7 +27,13 @@ class ImportFormType extends AbstractType
     {
         $builder
             ->add('archive', FileType::class, [
-                'label' => 'Seleccionar Archivo a Importar...'
+                'label' => 'Seleccionar Archivo a Importar...',
+                'label_attr' => [
+                    'class' => "form-label",
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
             ])
         ;
 
