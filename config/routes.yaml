@@ -47,6 +47,6 @@ app_imagen_import:
 
 app_imagen_aprobados:
     path: /imagen/todos-aprobados
-    controller: App\Controller\ImagenController::aprobados
+    controller: App\Controller\ImagenController::aprobarTodos
     methods: POST
 

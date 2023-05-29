@@ -181,7 +181,7 @@ class ImagenController extends AbstractController
 
     /**
      * @Route("/todos-aprobados", name="app_imagen_aprobados", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY", "ROLE_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function aprobarTodos(Request $request, ImagenRepository $imagenRepository): Response
     {
